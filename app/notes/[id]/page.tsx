@@ -7,7 +7,6 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
 
@@ -28,8 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-
-const NoteDetailsPage = async ({ params }: Props) => {
+export default async function NoteDetailsPage({ params }: Props) {
   const { id } = await params;
 
   const queryClient = new QueryClient();
@@ -44,6 +42,4 @@ const NoteDetailsPage = async ({ params }: Props) => {
       <NoteDetailsClient noteId={id} />
     </HydrationBoundary>
   );
-};
-
-export default NoteDetailsPage;
+}
