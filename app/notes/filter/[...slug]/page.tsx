@@ -7,7 +7,6 @@ type Props = {
   params: Promise<{ slug: string[] }>;
 };
 
-
 export async function generateMetadata(
   { params }: Props
 ): Promise<Metadata> {
@@ -16,16 +15,29 @@ export async function generateMetadata(
   const tag = slug?.[0] ?? "All";
   const isAll = tag === "All";
 
+  const title = isAll
+    ? "NoteHub — All notes"
+    : `NoteHub — ${tag} notes`;
+
+  const description = isAll
+    ? "Browse all notes in NoteHub."
+    : `Browse notes tagged with "${tag}" in NoteHub.`;
+
+  const url = isAll
+    ? "/notes/filter/All"
+    : `/notes/filter/${encodeURIComponent(tag)}`;
+
   return {
-    title: isAll
-      ? "NoteHub — All notes"
-      : `NoteHub — ${tag} notes`,
-    description: isAll
-      ? "Browse all notes in NoteHub."
-      : `Browse notes tagged with "${tag}" in NoteHub.`,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url,
+      images: ["https://ac.goit.global/fullstack/react/notehub-og-meta.jpg"],
+    },
   };
 }
-
 
 const NotesByTag = async ({ params }: Props) => {
   const { slug } = await params;

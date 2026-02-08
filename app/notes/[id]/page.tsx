@@ -7,22 +7,45 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(
+  { params }: Props
+): Promise<Metadata> {
   const { id } = await params;
 
   try {
     const note = await fetchNoteById(id);
 
+    const title = `NoteHub — ${note.title}`;
+    const description = note.content
+      ? note.content.slice(0, 140)
+      : `Details for note "${note.title}"`;
+
+    const url = `/notes/${encodeURIComponent(id)}`;
+
     return {
-      title: `NoteHub — ${note.title}`,
-      description: note.content
-        ? note.content.slice(0, 140)
-        : `Details for note "${note.title}"`,
+      title,
+      description,
+      openGraph: {
+        title,
+        description,
+        url,
+        images: ["https://ac.goit.global/fullstack/react/notehub-og-meta.jpg"],
+      },
     };
   } catch {
+    const title = "NoteHub — Note not found";
+    const description = "The requested note does not exist.";
+    const url = `/notes/${encodeURIComponent(id)}`;
+
     return {
-      title: "NoteHub — Note not found",
-      description: "The requested note does not exist.",
+      title,
+      description,
+      openGraph: {
+        title,
+        description,
+        url,
+        images: ["https://ac.goit.global/fullstack/react/notehub-og-meta.jpg"],
+      },
     };
   }
 }
